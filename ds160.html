@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Formulario pre DS-160 — PureForm</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <!-- US Theme Styles Overrides -->
+  <style>
+    :root {
+      --usa-blue: #002868;
+      --usa-red: #BF0A30;
+      --usa-white: #FFFFFF;
+      --primary: var(--usa-blue);
+    }
+    .ds160-body {
+      background: linear-gradient(135deg, #001f52 0%, #002868 50%, #7a0019 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      padding: 60px 20px;
+      font-family: 'Inter', sans-serif;
+    }
+    .form-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      animation: fadeIn 0.8s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .form-header {
+      background: rgba(0, 40, 104, 0.9);
+      color: white;
+      padding: 40px;
+      text-align: center;
+      position: relative;
+    }
+    .form-header::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--usa-red) 0%, transparent 100%);
+    }
+    .form-header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .form-header p {
+      margin: 10px 0 0;
+      opacity: 0.8;
+      font-size: 1rem;
+      font-weight: 400;
+    }
+    .section-card {
+      padding: 40px;
+      border-bottom: 1px solid rgba(0, 40, 104, 0.1);
+    }
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--usa-blue);
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      letter-spacing: -0.01em;
+    }
+    .section-title::before {
+      content: "";
+      width: 6px;
+      height: 24px;
+      background: var(--usa-red);
+      border-radius: 3px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--usa-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.8;
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(0, 40, 104, 0.2);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      color: #1a1a1a;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 1);
+      border-color: var(--usa-blue);
+      box-shadow: 0 0 0 4px rgba(0, 40, 104, 0.1);
+    }
+    .radio-group {
+      display: flex;
+      gap: 25px;
+      margin-top: 12px;
+    }
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .radio-option input {
+      accent-color: var(--usa-blue);
+      width: 18px;
+      height: 18px;
+    }
+    .btn-submit {
+      background: var(--usa-blue);
+      color: white;
+      border: none;
+      padding: 18px 36px;
+      border-radius: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1.1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(0, 40, 104, 0.3);
+    }
+    .btn-submit:hover {
+      background: #001a44;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 40, 104, 0.4);
+    }
+    .btn-pdf {
+      background: var(--usa-red);
+      margin-top: 15px;
+      box-shadow: 0 4px 15px rgba(191, 10, 48, 0.3);
+    }
+    .btn-pdf:hover {
+      background: #a00828;
+      box-shadow: 0 8px 25px rgba(191, 10, 48, 0.4);
+    }
+    .flag-icon {
+      width: 60px;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    }
+    @media print {
+      .no-print { display: none !important; }
+      .ds160-body { padding: 0; background: white; }
+      .form-container { box-shadow: none; border: 1px solid #eee; background: white; backdrop-filter: none; }
+    }
+  </style>
+</head>
+<body class="ds160-body">
+
+<div class="form-container" id="ds160FormArea">
+  <div class="form-header">
+    <svg class="flag-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 741 390">
+      <path fill="#bf0a30" d="M0 0h741v30H0zM0 60h741v30H0zM0 120h741v30H0zM0 180h741v30H0zM0 240h741v30H0zM0 300h741v30H0zM0 360h741v30H0z"/>
+      <path fill="#fff" d="M0 30h741v30H0zM0 90h741v30H0zM0 150h741v30H0zM0 210h741v30H0zM0 270h741v30H0zM0 330h741v30H0z"/>
+      <path fill="#002868" d="M0 0h296.4v210H0z"/>
+      <g fill="#fff">
+        <g id="s18">
+          <g id="s9">
+            <g id="s5">
+              <g id="s">
+                <path id="p" d="M24.7 9.5l1.6 4.9h5.2l-4.2 3 1.6 4.9-4.2-3-4.2 3 1.6-4.9-4.2-3h5.2z"/>
+              </g>
+              <use href="#s" y="42"/>
+              <use href="#s" y="84"/>
+              <use href="#s" y="126"/>
+              <use href="#s" y="168"/>
+            </g>
+            <use href="#s5" x="49.4" y="21"/>
+          </g>
+          <use href="#s9" x="98.8"/>
+        </g>
+        <use href="#s18" x="197.6"/>
+        <use href="#s5" x="247" y="21"/>
+      </g>
+    </svg>
+    <h1>Formulario pre DS-160</h1>
+    <p>Solicitud de Visa de No Inmigrante para Estados Unidos</p>
+  </div>
+
+  <form id="ds160Form">
+    <!-- Información Personal 1 -->
+    <div class="section-card">
+      <div class="section-title">Información Personal 1</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Apellidos (todos)</label>
+          <input type="text" name="apellidos" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nombres (todos)</label>
+          <input type="text" name="nombres" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">¿Ha usado otros nombres?</label>
+          <input type="text" name="otros_nombres" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sexo</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="sexo" value="M" required> Masculino</label>
+            <label class="radio-option"><input type="radio" name="sexo" value="F"> Femenino</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado Civil</label>
+          <select name="estado_civil" class="form-control" required>
+            <option value="">Seleccione...</option>
+            <option value="Casado/a">Casado/a</option>
+            <option value="Soltero/a">Soltero/a</option>
+            <option value="Viudo/a">Viudo/a</option>
+            <option value="Divorciado/a">Divorciado/a</option>
+            <option value="Legalmente Separado/a">Legalmente Separado/a</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha de Nacimiento</label>
+          <input type="date" name="fecha_nacimiento" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ciudad de Nacimiento</label>
+          <input type="text" name="ciudad_nacimiento" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado/Provincia de Nacimiento</label>
+          <input type="text" name="provincia_nacimiento" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">País de Nacimiento</label>
+          <input type="text" name="pais_nacimiento" class="form-control" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información Personal 2 -->
+    <div class="section-card">
+      <div class="section-title">Información Personal 2</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Nacionalidad</label>
+          <input type="text" name="nacionalidad" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">¿Tiene otra nacionalidad?</label>
+          <input type="text" name="otra_nacionalidad" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Número de Identificación Nacional</label>
+          <input type="text" name="id_nacional" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Número de Seguro Social EUA</label>
+          <input type="text" name="ssn_usa" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Número ID de Impuestos (U.S. Taxpayer ID)</label>
+          <input type="text" name="tax_id_usa" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <!-- Dirección y Teléfono -->
+    <div class="section-card">
+      <div class="section-title">Dirección y Teléfono</div>
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label class="form-label">Dirección (Línea 1)</label>
+          <input type="text" name="direccion_1" class="form-control" required>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Dirección (Línea 2) *Opcional</label>
+          <input type="text" name="direccion_2" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ciudad</label>
+          <input type="text" name="ciudad" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado/Provincia</label>
+          <input type="text" name="estado" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Código Postal</label>
+          <input type="text" name="zip" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">País</label>
+          <input type="text" name="pais" class="form-control" required>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">¿Es su dirección postal la misma del domicilio?</label>
+          <input type="text" name="mismo_postal" class="form-control" placeholder="Sí / No (si no, indique dirección)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono Hogar</label>
+          <input type="tel" name="tel_hogar" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono Empleo</label>
+          <input type="tel" name="tel_empleo" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Celular</label>
+          <input type="tel" name="tel_celular" class="form-control" required>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Correo Electrónico</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información del Pasaporte -->
+    <div class="section-card">
+      <div class="section-title">Información del Pasaporte</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Número del Pasaporte</label>
+          <input type="text" name="pasaporte_num" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Número del Libro del Pasaporte</label>
+          <input type="text" name="pasaporte_libro" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">País/Autoridad Emisora</label>
+          <input type="text" name="pasaporte_pais" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ciudad de Emisión</label>
+          <input type="text" name="pasaporte_ciudad" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha de Emisión</label>
+          <input type="date" name="pasaporte_emision" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha de Vencimiento</label>
+          <input type="date" name="pasaporte_vencimiento" class="form-control" required>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">¿Ha perdido su pasaporte o se lo han robado?</label>
+          <input type="text" name="pasaporte_perdido" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <!-- Información de Viajes -->
+    <div class="section-card">
+      <div class="section-title">Información de Viajes</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">¿Es el solicitante principal?</label>
+          <input type="text" name="solicitante_principal" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Día previsto de llegada</label>
+          <input type="date" name="llegada_prevista" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duración prevista de estancia</label>
+          <input type="text" name="estancia_duracion" class="form-control">
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Dirección donde se quedará en EE.UU</label>
+          <textarea name="direccion_usa" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">¿Quién pagará por su viaje?</label>
+          <select name="quien_paga" class="form-control">
+            <option value="Yo">Yo</option>
+            <option value="Otra Persona">Otra Persona</option>
+            <option value="Empresa">Empresa/Organización</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Más secciones se generarán dinámicamente o se pueden añadir aquí -->
+    <!-- Por brevedad en este paso, añadiré el resto de campos en un grupo compacto -->
+    
+    <div class="section-card">
+      <div class="section-title">Preguntas de Seguridad y Otros</div>
+      <p style="font-size: 0.8rem; color: #666; margin-bottom: 20px;">Complete los campos adicionales requeridos según el cuestionario DS-160.</p>
+      <div class="form-grid">
+         <div class="form-group full-width">
+          <label class="form-label">Información de Compañeros de Viaje</label>
+          <textarea name="companeros_viaje" class="form-control" rows="2" placeholder="Nombres y relación..."></textarea>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Viajes anteriores a EE.UU (Fechas y Duración)</label>
+          <textarea name="viajes_anteriores" class="form-control" rows="2"></textarea>
+        </div>
+         <div class="form-group full-width">
+          <label class="form-label">Punto de Contacto en EUA (Nombre, Org, Relación, Dir, Tel)</label>
+          <textarea name="contacto_usa" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Información Familiar (Padres y Parientes en EUA)</label>
+          <textarea name="familia_info" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Empleo y Educación (Actual y últimos 5 años)</label>
+          <textarea name="empleo_educacion" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Seguridad y Antecedentes (Salud, Criminal, Seguridad, Inmigración)</label>
+          <textarea name="seguridad_antecedentes" class="form-control" rows="4" placeholder="Indique si hay algún antecedente o problema de salud..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card no-print">
+      <button type="submit" class="btn-submit" id="submitBtn">Enviar Formulario</button>
+      <button type="button" class="btn-submit btn-pdf" id="pdfBtn">Descargar como PDF</button>
+    </div>
+  </form>
+  <div class="us-flag-strip"></div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script type="module" src="js/ds160.js"></script>
+</body>
+</html>
