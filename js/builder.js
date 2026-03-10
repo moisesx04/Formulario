@@ -3,7 +3,7 @@
 // ============================================================
 
 import { db } from "./firebase-config.js";
-import { requireAuth, bindLogout, setActiveSidebarLink } from "./auth.js";
+import { isDemoMode, requireAuth, bindLogout, setActiveSidebarLink } from "./auth.js";
 import { generateToken, showToast, copyToClipboard } from "./utils.js";
 import {
   collection, addDoc, serverTimestamp
@@ -247,20 +247,26 @@ async function saveForm() {
 
   try {
     const token = generateToken();
-    await addDoc(collection(db, "forms"), {
-      title,
-      fields,
-      token,
-      status: "active",
-      createdAt: serverTimestamp()
-    });
+    
+    if (isDemoMode()) {
+      // Simulation delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+    } else {
+      await addDoc(collection(db, "forms"), {
+        title,
+        fields,
+        token,
+        status: "active",
+        createdAt: serverTimestamp()
+      });
+    }
 
     const link = `${window.location.origin}/form.html?token=${token}`;
     document.getElementById("generatedLink").value = link;
     document.getElementById("openLinkBtn").href     = link;
     document.getElementById("linkModal").classList.add("show");
 
-    showToast("Formulario guardado exitosamente", "success");
+    showToast("Formulario guardado exitosamente" + (isDemoMode() ? " (Simulado)" : ""), "success");
     fields = []; selectedFieldId = null;
     document.getElementById("formTitle").value = "";
     renderCanvas();

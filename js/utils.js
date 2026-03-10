@@ -71,3 +71,19 @@ export function debounce(fn, delay = 300) {
   let timer;
   return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
 }
+
+// ============================================================
+//  Demo Mode Mock Data
+// ============================================================
+
+export const MOCK_FORMS = [
+  { id: "demo-f1", title: "Solicitud de Visa DS-160", status: "active", fields: [], token: "demo-t1", createdAt: { toDate: () => new Date(Date.now() - 86400000) } },
+  { id: "demo-f2", title: "Registro de Cliente Nuevo", status: "active", fields: [], token: "demo-t2", createdAt: { toDate: () => new Date(Date.now() - 172800000) } }
+];
+
+export const MOCK_SUBMISSIONS = [
+  { id: "demo-s1", formId: "demo-f1", formTitle: "Solicitud de Visa DS-160", data: { nombre: "Carlos Ruiz", pais: "México", motivo: "Turismo" }, submittedAt: { toDate: () => new Date() } },
+  { id: "demo-s2", formId: "demo-f1", formTitle: "Solicitud de Visa DS-160", data: { nombre: "Ana García", pais: "Colombia", motivo: "Negocios" }, submittedAt: { toDate: () => new Date(Date.now() - 3600000) } },
+  { id: "demo-s3", formId: "demo-f2", formTitle: "Registro de Cliente Nuevo", data: { empresa: "Tech Solutions", contacto: "Luis Luna" }, submittedAt: { toDate: () => new Date(Date.now() - 7200000) } },
+  { id: "demo-s4", formId: "demo-f1", formTitle: "Solicitud de Visa DS-160", data: { nombre: "Roberto Diaz", pais: "España", motivo: "Estudios" }, submittedAt: { toDate: () => new Date(Date.now() - 86400000) } }
+];

@@ -11,6 +11,7 @@ import {
 const emailEl    = document.getElementById("email");
 const passwordEl = document.getElementById("password");
 const loginBtn   = document.getElementById("loginBtn");
+const demoBtn    = document.getElementById("demoBtn");
 const errorEl    = document.getElementById("loginError");
 
 // If already logged in, go to dashboard
@@ -61,6 +62,11 @@ loginBtn.addEventListener("click", async () => {
   } finally {
     setLoading(false);
   }
+});
+
+demoBtn?.addEventListener("click", () => {
+  sessionStorage.setItem("demo_mode", "true");
+  window.location.href = "dashboard.html";
 });
 
 // Allow Enter key

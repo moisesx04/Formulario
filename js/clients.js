@@ -3,8 +3,8 @@
 // ============================================================
 
 import { db } from "./firebase-config.js";
-import { requireAuth, bindLogout, setActiveSidebarLink } from "./auth.js";
-import { formatDate, copyToClipboard, showToast, debounce } from "./utils.js";
+import { isDemoMode, requireAuth, bindLogout, setActiveSidebarLink } from "./auth.js";
+import { formatDate, copyToClipboard, showToast, debounce, MOCK_FORMS } from "./utils.js";
 import {
   collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -21,8 +21,12 @@ let filtered   = [];
 let deleteTarget = null;
 
 async function loadForms() {
-  const snap = await getDocs(query(collection(db, "forms"), orderBy("createdAt", "desc")));
-  allForms = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  if (isDemoMode()) {
+    allForms = MOCK_FORMS;
+  } else {
+    const snap = await getDocs(query(collection(db, "forms"), orderBy("createdAt", "desc")));
+    allForms = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
   filtered = [...allForms];
   render();
 }
@@ -90,11 +94,13 @@ function render() {
 async function toggleArchive(id, currentStatus) {
   const newStatus = currentStatus === "active" ? "archived" : "active";
   try {
-    await updateDoc(doc(db, "forms", id), { status: newStatus });
+    if (!isDemoMode()) {
+      await updateDoc(doc(db, "forms", id), { status: newStatus });
+    }
     const form = allForms.find(f => f.id === id);
     if (form) form.status = newStatus;
     applyFilters();
-    showToast(`Formulario ${newStatus === "active" ? "activado" : "archivado"}`, "success");
+    showToast(`Formulario ${newStatus === "active" ? "activado" : "archivado"}${isDemoMode() ? " (Simulado)" : ""}`, "success");
   } catch (err) {
     showToast("Error al actualizar el formulario", "error");
   }
@@ -115,11 +121,13 @@ function bindUI() {
   document.getElementById("confirmDelete").addEventListener("click", async () => {
     if (!deleteTarget) return;
     try {
-      await deleteDoc(doc(db, "forms", deleteTarget));
+      if (!isDemoMode()) {
+        await deleteDoc(doc(db, "forms", deleteTarget));
+      }
       allForms = allForms.filter(f => f.id !== deleteTarget);
       closeDeleteModal();
       applyFilters();
-      showToast("Formulario eliminado", "success");
+      showToast("Formulario eliminado" + (isDemoMode() ? " (Simulado)" : ""), "success");
     } catch {
       showToast("Error al eliminar", "error");
     }

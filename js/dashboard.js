@@ -3,8 +3,8 @@
 // ============================================================
 
 import { db } from "./firebase-config.js";
-import { requireAuth, bindLogout, setActiveSidebarLink } from "./auth.js";
-import { formatDate } from "./utils.js";
+import { isDemoMode, requireAuth, bindLogout, setActiveSidebarLink } from "./auth.js";
+import { formatDate, MOCK_FORMS, MOCK_SUBMISSIONS } from "./utils.js";
 import {
   collection, getDocs, query, orderBy, limit, where, Timestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -24,13 +24,18 @@ let allSubmissions = [];
 let allForms       = [];
 
 async function loadStats() {
-  const [formsSnap, subsSnap] = await Promise.all([
-    getDocs(collection(db, "forms")),
-    getDocs(collection(db, "submissions"))
-  ]);
+  if (isDemoMode()) {
+    allForms       = MOCK_FORMS;
+    allSubmissions = MOCK_SUBMISSIONS;
+  } else {
+    const [formsSnap, subsSnap] = await Promise.all([
+      getDocs(collection(db, "forms")),
+      getDocs(collection(db, "submissions"))
+    ]);
 
-  allForms       = formsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-  allSubmissions = subsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    allForms       = formsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    allSubmissions = subsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
 
   const now         = new Date();
   const monthStart  = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -47,17 +52,23 @@ async function loadStats() {
 }
 
 async function loadRecentSubmissions() {
-  const q    = query(collection(db, "submissions"), orderBy("submittedAt", "desc"), limit(10));
-  const snap = await getDocs(q);
   const tbody = document.getElementById("recentBody");
+  let docs = [];
 
-  if (snap.empty) {
+  if (isDemoMode()) {
+    docs = MOCK_SUBMISSIONS.slice(0, 10);
+  } else {
+    const q    = query(collection(db, "submissions"), orderBy("submittedAt", "desc"), limit(10));
+    const snap = await getDocs(q);
+    docs = snap.docs.map(d => d.data());
+  }
+
+  if (docs.length === 0) {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--gray-mid);padding:32px;">Sin respuestas aún</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = snap.docs.map(doc => {
-    const s         = doc.data();
+  tbody.innerHTML = docs.map(s => {
     const fieldCount = s.data ? Object.keys(s.data).length : 0;
     return `
       <tr>

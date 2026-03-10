@@ -3,8 +3,8 @@
 // ============================================================
 
 import { db } from "./firebase-config.js";
-import { requireAuth, bindLogout, setActiveSidebarLink } from "./auth.js";
-import { formatDate, exportCSV, showToast, debounce } from "./utils.js";
+import { isDemoMode, requireAuth, bindLogout, setActiveSidebarLink } from "./auth.js";
+import { formatDate, exportCSV, showToast, debounce, MOCK_FORMS, MOCK_SUBMISSIONS } from "./utils.js";
 import {
   collection, getDocs, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -22,16 +22,30 @@ let filtered    = [];
 let currentPage = 1;
 
 async function loadData() {
-  const [subsSnap, formsSnap] = await Promise.all([
-    getDocs(query(collection(db, "submissions"), orderBy("submittedAt", "desc"))),
-    getDocs(collection(db, "forms"))
-  ]);
+  let subs = [];
+  let forms = [];
 
-  allData = subsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  if (isDemoMode()) {
+    subs = MOCK_SUBMISSIONS;
+    forms = MOCK_FORMS;
+  } else {
+    const [subsSnap, formsSnap] = await Promise.all([
+      getDocs(query(collection(db, "submissions"), orderBy("submittedAt", "desc"))),
+      getDocs(collection(db, "forms"))
+    ]);
+    subs = subsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    forms = formsSnap.docs;
+  }
+
+  allData = subs;
 
   // Populate form filter
   const formMap = {};
-  formsSnap.docs.forEach(d => { formMap[d.id] = d.data().title || d.id; });
+  if (isDemoMode()) {
+    forms.forEach(f => { formMap[f.id] = f.title; });
+  } else {
+    forms.forEach(d => { formMap[d.id] = d.data().title || d.id; });
+  }
   const sel = document.getElementById("formFilter");
   Object.entries(formMap).forEach(([id, title]) => {
     const opt = document.createElement("option");
