@@ -69,6 +69,14 @@ demoBtn?.addEventListener("click", () => {
   window.location.href = "dashboard.html";
 });
 
+// Check for auto-demo via URL
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("demo") === "true") {
+    demoBtn?.click();
+  }
+});
+
 // Allow Enter key
 [emailEl, passwordEl].forEach(el => {
   el.addEventListener("keydown", e => {

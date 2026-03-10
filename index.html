@@ -13,9 +13,16 @@
 <script type="module">
   import { auth } from "./js/firebase-config.js";
   import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  onAuthStateChanged(auth, user => {
-    window.location.href = user ? "dashboard.html" : "login.html";
-  });
+  
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("demo") === "true") {
+    sessionStorage.setItem("demo_mode", "true");
+    window.location.href = "dashboard.html";
+  } else {
+    onAuthStateChanged(auth, user => {
+      window.location.href = user ? "dashboard.html" : "login.html";
+    });
+  }
 </script>
 </body>
 </html>
