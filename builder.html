@@ -9,6 +9,8 @@
 <body>
 
 <div class="app-shell">
+  <!-- Mobile sidebar overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar__brand">
@@ -36,7 +38,12 @@
   <main class="main-content">
     <div class="page-header">
       <div class="page-header__top">
-        <h2>Constructor de Formularios</h2>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <h2>Constructor de Formularios</h2>
+        </div>
         <div style="display:flex;gap:10px;">
           <button class="btn btn--secondary" id="previewBtn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -118,5 +125,14 @@
 </div>
 
 <script type="module" src="js/builder.js"></script>
+<script>
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (menuToggle) {
+    menuToggle.addEventListener('click', () => { sidebar.classList.toggle('sidebar--open'); overlay.classList.toggle('sidebar-overlay--visible'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('sidebar--open'); overlay.classList.remove('sidebar-overlay--visible'); });
+  }
+</script>
 </body>
 </html>
