@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>PureForm</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;">
+  <span class="spinner spinner--white" style="width:32px;height:32px;"></span>
+</div>
+<script type="module">
+  import { auth } from "./js/firebase-config.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  onAuthStateChanged(auth, user => {
+    window.location.href = user ? "dashboard.html" : "login.html";
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>PureForm — Dashboard</title>
+  <meta name="description" content="Dashboard principal de PureForm con estadísticas y gráficas."/>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <div class="sidebar__logo">
+        <div class="sidebar__logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="3"/>
+            <path d="M8 9h8M8 13h6M8 17h4"/>
+          </svg>
+        </div>
+        <span class="sidebar__logo-text">Pure<span>Form</span></span>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <span class="sidebar__section-label">Principal</span>
+      <a href="dashboard.html" class="sidebar__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </a>
+      <a href="builder.html" class="sidebar__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Constructor
+      </a>
+
+      <span class="sidebar__section-label" style="margin-top:8px;">Datos</span>
+      <a href="submissions.html" class="sidebar__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+        Respuestas
+      </a>
+      <a href="clients.html" class="sidebar__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Mis Formularios
+      </a>
+    </nav>
+    <div class="sidebar__footer">
+      <button class="sidebar__link w-full btn--ghost" id="logoutBtn" style="background:none;color:var(--gray-light);font-weight:500;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-header__top">
+        <h2>Dashboard</h2>
+        <span id="adminEmail" style="font-size:0.8rem;color:var(--gray-light);"></span>
+      </div>
+      <p class="page-header__subtitle">Resumen de actividad de PureForm</p>
+    </div>
+
+    <div class="page-body">
+
+      <!-- Stats -->
+      <div class="stats-grid animate-in" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <div class="stat-card__value" id="statForms">—</div>
+          <div class="stat-card__label">Formularios Creados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+          </div>
+          <div class="stat-card__value" id="statSubmissions">—</div>
+          <div class="stat-card__label">Total de Respuestas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div class="stat-card__value" id="statMonth">—</div>
+          <div class="stat-card__label">Respuestas este mes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <div class="stat-card__value" id="statActive">—</div>
+          <div class="stat-card__label">Formularios Activos</div>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <span class="chart-card__title">Respuestas por día (últimos 30 días)</span>
+          </div>
+          <canvas id="lineChart" height="120"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <span class="chart-card__title">Respuestas por formulario</span>
+          </div>
+          <canvas id="doughnutChart" height="180"></canvas>
+        </div>
+      </div>
+
+      <!-- Recent Submissions -->
+      <div class="chart-card">
+        <div class="chart-card__header">
+          <span class="chart-card__title">Últimas respuestas</span>
+          <a href="submissions.html" class="btn btn--ghost btn--sm">Ver todo →</a>
+        </div>
+        <div class="table-wrap" style="border:none;border-radius:0;margin-top:8px;">
+          <table class="pf-table" id="recentTable">
+            <thead>
+              <tr>
+                <th>Formulario</th>
+                <th>Fecha</th>
+                <th>Campos</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="recentBody">
+              <tr><td colspan="4" style="text-align:center;color:var(--gray-mid);padding:32px;">Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
